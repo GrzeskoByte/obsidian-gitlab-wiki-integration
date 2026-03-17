@@ -82,7 +82,7 @@ export class SampleSettingTab extends PluginSettingTab {
 					.setIcon("lucide-refresh-cw")
 					.setTooltip("Sync repository")
 					.onClick(async () => {
-						this.syncRepository(index, "Gitlab Respositories");
+						this.syncRepository(index, "Gitlab_Repositories");
 						new Notice("Syncing with Gitlab Wiki...");
 					}),
 			);
@@ -112,7 +112,6 @@ export class SampleSettingTab extends PluginSettingTab {
 
 			new Notice(`Repository ${repoName} synced successfully!`);
 		} catch (err: any) {
-			console.log(err);
 			new Notice(`Failed to sync repository ${repoName}: ${err.message}`);
 		}
 	};
