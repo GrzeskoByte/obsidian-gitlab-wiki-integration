@@ -4,8 +4,8 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Integrate your GitLab Wiki with Obsidian, allowing you to sync and manage your wiki content directly from Obsidian.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"author": "GrzeskoByte",
+	"authorUrl": "https://github.com/GrzeskoByte",
+	"main": "main.js",
 	"isDesktopOnly": false
 }

@@ -1,0 +1,7 @@
+{
+	"id": "obsidian-gitlab-wiki-integration",
+	"name": "Obsidian GitLab Wiki Integration",
+	"author": "GrzeskoByte",
+	"description": "Sync and manage GitLab Wiki repositories directly from Obsidian.",
+	"repo": "GrzeskoByte/obsidian-gitlab-wiki-integration"
+}

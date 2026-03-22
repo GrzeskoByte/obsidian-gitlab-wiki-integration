@@ -87,32 +87,44 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 			deleted: [],
 		};
 
-		const repoPath =
-			//@ts-ignore
-			`${this.app.vault.adapter.basePath}/Gitlab_Repositories/${repoName}`.replace(
-				/\\/g,
-				"/",
+		try {
+			const repoPath =
+				//@ts-ignore
+				`${this.app.vault.adapter.basePath}/Gitlab_Repositories/${repoName}`.replace(
+					/\\/g,
+					"/",
+				);
+			const res = await execAsync(
+				`git -C "${repoPath}" status --porcelain`,
 			);
-		const res = await execAsync(`git -C "${repoPath}" status --porcelain`);
 
-		const lines = res.stdout.trim().split("\n");
-
-		lines.forEach((line) => {
-			line = line.trim();
-			const status = line.split(" ")[0];
-			const filePath = `/${repoName}/${line.slice(2).trim()}`
-				.toLowerCase()
-				// @ts-ignore
-				.replaceAll('"', "");
-
-			if (status === "M") {
-				changes.modified.push(filePath);
-			} else if (status === "A" || status === "??") {
-				changes.created.push(filePath);
-			} else if (status === "D" || status === "R") {
-				changes.deleted.push(filePath);
+			const output = res.stdout.trim();
+			if (output.length === 0) {
+				this.changes = changes;
+				this.updateLeftSidebarElements(this.changes);
+				return;
 			}
-		});
+
+			const lines = output.split("\n");
+
+			lines.forEach((line) => {
+				const status = line.slice(0, 2).trim();
+				const filePath = `/${repoName}/${line.slice(2).trim()}`
+					.toLowerCase()
+					// @ts-ignore
+					.replaceAll('"', "");
+
+				if (status.includes("M")) {
+					changes.modified.push(filePath);
+				} else if (status === "A" || status === "??") {
+					changes.created.push(filePath);
+				} else if (status.includes("D") || status.startsWith("R")) {
+					changes.deleted.push(filePath);
+				}
+			});
+		} catch (error) {
+			new Notice(`Could not read git status for ${repoName}.`, 3000);
+		}
 
 		this.changes = changes;
 		this.updateLeftSidebarElements(this.changes);
@@ -254,8 +266,9 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 			),
 				await execAsync(`git -C "${repoPath}" push`));
 			await this.checkGitFilesState(repoName);
-		} finally {
 			new Notice(`Repository ${repoName} synced successfully!`, 3000);
+		} catch (error) {
+			new Notice(`Failed to sync repository ${repoName}.`, 3000);
 		}
 	}
 

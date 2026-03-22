@@ -1,9 +1,18 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-gitlab-wiki-integration",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Obsidian plugin for syncing and managing GitLab Wiki repositories directly from your vault.",
 	"main": "main.js",
 	"type": "module",
+	"author": "GrzeskoByte",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/GrzeskoByte/obsidian-gitlab-wiki-integration.git"
+	},
+	"homepage": "https://github.com/GrzeskoByte/obsidian-gitlab-wiki-integration",
+	"bugs": {
+		"url": "https://github.com/GrzeskoByte/obsidian-gitlab-wiki-integration/issues"
+	},
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
