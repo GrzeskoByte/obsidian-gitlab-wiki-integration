@@ -7,5 +7,5 @@
 	"author": "GrzeskoByte",
 	"authorUrl": "https://github.com/GrzeskoByte",
 	"main": "main.js",
-	"isDesktopOnly": false
+	"isDesktopOnly": true
 }

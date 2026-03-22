@@ -15,7 +15,7 @@ export const DEFAULT_SETTINGS: ObsidianGitlabWikiIntegrationSettings = {
 	repositories: [],
 };
 
-export class SampleSettingTab extends PluginSettingTab {
+export class GitlabWikiSettingTab extends PluginSettingTab {
 	plugin: ObsidianGitlabIntegration;
 
 	constructor(app: App, plugin: ObsidianGitlabIntegration) {
@@ -55,8 +55,8 @@ export class SampleSettingTab extends PluginSettingTab {
 		} = this;
 
 		new Setting(containerEl)
-			.setName("Gitlab Repository URL")
-			.setDesc("Enter the URL of your Gitlab repository")
+			.setName("GitLab repository URL")
+			.setDesc("Enter the URL of your GitLab repository")
 			.addText((text) =>
 				text
 					.setPlaceholder("Enter your repository URL")
@@ -83,7 +83,7 @@ export class SampleSettingTab extends PluginSettingTab {
 					.setTooltip("Sync repository")
 					.onClick(async () => {
 						this.syncRepository(index, "Gitlab_Repositories");
-						new Notice("Syncing with Gitlab Wiki...");
+						new Notice("Syncing with GitLab wiki...");
 					}),
 			);
 	}

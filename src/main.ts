@@ -3,8 +3,8 @@ import { Notice, Plugin, setIcon } from "obsidian";
 import { promisify } from "util";
 import {
 	DEFAULT_SETTINGS,
+	GitlabWikiSettingTab,
 	ObsidianGitlabWikiIntegrationSettings,
-	SampleSettingTab,
 } from "./settings";
 
 const execAsync = promisify(exec);
@@ -24,7 +24,7 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new GitlabWikiSettingTab(this.app, this));
 
 		this.registerEvent(
 			this.app.vault.on("modify", (file) => {
@@ -186,9 +186,6 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 							}
 
 							if (!isModified && !isCreated && !isDeleted) {
-								//@ts-ignore
-								item.style.backgroundColor = ""; // Reset background for unchanged files
-
 								if (item.querySelector(".custom-status")) {
 									item.querySelector(
 										".custom-status",
@@ -210,10 +207,7 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 							const statusEl =
 								this.createStatusHTMLElement("Repo");
 
-							//@ts-ignore
-							item.style.display = "flex";
-							//@ts-ignore
-							item.style.alignItems = "center";
+							item.addClass("gitlab-repo-tree-item");
 
 							if (!item.querySelector(".custom-status")) {
 								item.prepend(statusEl);
@@ -275,38 +269,29 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 	createStatusHTMLElement(status: "M" | "C" | "D" | "Repo") {
 		const statusElement = document.createElement("span");
 		statusElement.textContent = ` (${status})`;
-		statusElement.style.marginLeft = "5px";
+		statusElement.className = "custom-status";
 
 		switch (status) {
 			case "M":
-				statusElement.style.color = "orange";
+				statusElement.addClass("custom-status--modified");
 				break;
 			case "C":
-				statusElement.style.color = "green";
+				statusElement.addClass("custom-status--created");
 				break;
 			case "D":
-				statusElement.style.color = "red";
+				statusElement.addClass("custom-status--deleted");
 				break;
 			case "Repo":
-				statusElement.style.marginRight = "5px";
+				statusElement.addClass("custom-status--repo");
 				setIcon(statusElement, "folder-git-2");
 				break;
 		}
-
-		statusElement.className = "custom-status";
 
 		return statusElement;
 	}
 
 	createSyncButton() {
 		const button = document.createElement("div");
-
-		button.style.borderRadius = "5px";
-		button.style.backgroundColor = "transparent";
-		button.style.cursor = "pointer";
-		button.style.marginLeft = "auto";
-		button.style.padding = "1px";
-		button.style.zIndex = "1000";
 		button.className = "sync-button";
 
 		setIcon(button, "refresh-ccw");

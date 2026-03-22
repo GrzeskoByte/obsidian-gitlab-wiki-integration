@@ -1,8 +1,33 @@
-/*
+.custom-status {
+	margin-left: 5px;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.custom-status--modified {
+	color: var(--text-warning, var(--text-accent));
+}
 
-If your plugin does not need CSS, delete this file.
+.custom-status--created {
+	color: var(--text-success, var(--text-accent));
+}
 
-*/
+.custom-status--deleted {
+	color: var(--text-error);
+}
+
+.custom-status--repo {
+	margin-right: 5px;
+}
+
+.gitlab-repo-tree-item {
+	display: flex;
+	align-items: center;
+}
+
+.sync-button {
+	margin-left: auto;
+	padding: 1px;
+	border-radius: 5px;
+	background-color: transparent;
+	cursor: pointer;
+	z-index: var(--layer-popover);
+}

@@ -60,3 +60,4 @@ _Placeholder: add screenshots for settings UI, file status badges, and sync butt
 - [ ] Reflect actual git tree state in Obsidian by parsing full `git status --porcelain` output for tracked, untracked, renamed, and deleted paths.
 - [ ] Include deleted files in the tree view as pending deletions until sync, with clear visual status and optional restore action.
 - [ ] Improve repository state refresh to avoid stale indicators after rename/delete operations.
+- [ ] Add support for GitHub Wiki repositories.
