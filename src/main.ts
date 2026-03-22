@@ -98,9 +98,12 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 		const lines = res.stdout.trim().split("\n");
 
 		lines.forEach((line) => {
+			line = line.trim();
 			const status = line.split(" ")[0];
-			const filePath =
-				`/${repoName}/${line.slice(2).trim()}`.toLowerCase();
+			const filePath = `/${repoName}/${line.slice(2).trim()}`
+				.toLowerCase()
+				// @ts-ignore
+				.replaceAll('"', "");
 
 			if (status === "M") {
 				changes.modified.push(filePath);
@@ -142,11 +145,6 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 								changes.created.includes(mdFilePath);
 							const isDeleted =
 								changes.deleted.includes(mdFilePath);
-
-							const fileName = mdFilePath
-								.split("/")
-								.pop()
-								?.replace(".md", "");
 
 							if (isModified) {
 								const statusElement =
