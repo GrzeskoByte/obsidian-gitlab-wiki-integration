@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { Plugin } from "obsidian";
+import { Notice, Plugin, setIcon } from "obsidian";
 import { promisify } from "util";
 import {
 	DEFAULT_SETTINGS,
@@ -200,15 +200,23 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 							const statusEl =
 								this.createStatusHTMLElement("Repo");
 
+							//@ts-ignore
+							item.style.display = "flex";
+							//@ts-ignore
+							item.style.alignItems = "center";
+
 							if (!item.querySelector(".custom-status")) {
-								item.appendChild(statusEl);
+								item.prepend(statusEl);
 							}
+
 							if (!item.querySelector(".sync-button")) {
 								const syncButton = this.createSyncButton();
 								item.appendChild(syncButton);
 
-								syncButton.addEventListener("click", () => {
-									// add listenert to sync button in particular repo
+								syncButton.addEventListener("click", (e) => {
+									e.stopPropagation();
+									e.preventDefault();
+									this.syncRepository(repoName!);
 								});
 							}
 						}
@@ -218,27 +226,44 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 		}
 	}
 
-	syncRepository(repoName: string) {
-		const repoPath =
-			//@ts-ignore
-			`${this.app.vault.adapter.basePath}/Gitlab_Repositories/${repoName}`.replace(
-				/\\/g,
-				"/",
-			);
+	async syncRepository(repoName: string) {
+		try {
+			const repoPath =
+				//@ts-ignore
+				`${this.app.vault.adapter.basePath}/Gitlab_Repositories/${repoName}`.replace(
+					/\\/g,
+					"/",
+				);
+			const numberOfChanges = Object.entries(this.changes)
+				.map(([key, value]) => value)
+				.flat().length;
 
-		execAsync(`git -C "${repoPath}" pull`)
-			.then(() => {
+			if (numberOfChanges === 0) {
+				new Notice(
+					`Pulling latest changes for repository ${repoName}...`,
+					3000,
+				);
+				await execAsync(`git -C "${repoPath}" pull`);
 				this.checkGitFilesState(repoName);
-			})
-			.catch((err) => {
-				console.error(`Error syncing repository ${repoName}:`, err);
-			});
+				return;
+			}
+
+			new Notice(`Syncing repository ${repoName}...`, 3000);
+
+			await execAsync(`git -C "${repoPath}" add .`);
+			(await execAsync(
+				`git -C "${repoPath}" commit -m "update wiki for ${repoName}"`,
+			),
+				await execAsync(`git -C "${repoPath}" push`));
+			await this.checkGitFilesState(repoName);
+		} finally {
+			new Notice(`Repository ${repoName} synced successfully!`, 3000);
+		}
 	}
 
 	createStatusHTMLElement(status: "M" | "C" | "D" | "Repo") {
 		const statusElement = document.createElement("span");
 		statusElement.textContent = ` (${status})`;
-		statusElement.style.fontSize = "1.2em";
 		statusElement.style.marginLeft = "5px";
 
 		switch (status) {
@@ -252,7 +277,8 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 				statusElement.style.color = "red";
 				break;
 			case "Repo":
-				statusElement.textContent = `(👑)`;
+				statusElement.style.marginRight = "5px";
+				setIcon(statusElement, "folder-git-2");
 				break;
 		}
 
@@ -262,18 +288,17 @@ export default class ObsidianGitlabWikiIntegration extends Plugin {
 	}
 
 	createSyncButton() {
-		const button = document.createElement("button");
+		const button = document.createElement("div");
 
-		button.textContent = "🔄";
 		button.style.borderRadius = "5px";
 		button.style.backgroundColor = "transparent";
 		button.style.cursor = "pointer";
 		button.style.marginLeft = "auto";
 		button.style.padding = "1px";
 		button.style.zIndex = "1000";
-		button.style.fontSize = "1.2em";
 		button.className = "sync-button";
 
+		setIcon(button, "refresh-ccw");
 		return button;
 	}
 
