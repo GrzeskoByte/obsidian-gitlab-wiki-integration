@@ -52,3 +52,11 @@ _Placeholder: add screenshots for settings UI, file status badges, and sync butt
 - Install dependencies: `npm install`
 - Build once: `npm run build`
 - Watch mode: `npm run dev`
+
+## Future Development
+
+- [ ] Add custom git actions per repository (stage selected files, commit with custom message, pull/rebase, push, stash).
+- [ ] Add quick actions in the explorer context menu for common workflows (pull, commit+push, discard file changes).
+- [ ] Reflect actual git tree state in Obsidian by parsing full `git status --porcelain` output for tracked, untracked, renamed, and deleted paths.
+- [ ] Include deleted files in the tree view as pending deletions until sync, with clear visual status and optional restore action.
+- [ ] Improve repository state refresh to avoid stale indicators after rename/delete operations.
