@@ -39,6 +39,7 @@ This plugin helps you keep documentation in GitLab Wiki and edit it from your va
 ## Configuration
 
 - **Gitlab Repository URL**: Add repository URLs one by one.
+- **Private repositories**: Ensure the URL includes your username and personal access token (or password) in this format: `https://<username>:<token-or-password>@gitlab.com/repo.git`.
 - **Add repository**: Create additional repository entries.
 - **Remove repository**: Delete an existing configured repository.
 - **Sync repository**: Clone/update the selected repo wiki.
